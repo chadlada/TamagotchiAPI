@@ -235,5 +235,35 @@ namespace TamagotchiAPI.Controllers
             return Ok(feeding);
         }
 
+        [HttpPost("{id}/Scoldings")]
+        public async Task<ActionResult<Playtime>> CreateScolding(int id, Scolding scolding)
+        //                                       |       |
+        //                                       |       Player deserialized from JSON from the body
+        //                                       |
+        //                                       Game Night ID comes from the URL
+        {
+            // First, let's find the game night (by using the ID)
+            var pet = await _context.Pets.FindAsync(id);
+
+            // If the game night doesn't exist: return a 404 Not found.
+            if (pet == null)
+            {
+                // Return a `404` response to the client indicating we could not find a game night with this id
+                return NotFound();
+            }
+
+            // Associate the player to the given game night.
+            scolding.PetId = pet.Id;
+            scolding.When = DateTime.Now;
+            pet.HappinessLevel -= 5;
+
+            // Add the player to the database
+            _context.Scoldings.Add(scolding);
+            await _context.SaveChangesAsync();
+
+            // Return the new player to the response of the API
+            return Ok(scolding);
+        }
+
     }
 }
