@@ -165,5 +165,75 @@ namespace TamagotchiAPI.Controllers
         {
             return _context.Pets.Any(pet => pet.Id == id);
         }
+
+        [HttpPost("{id}/Playtimes")]
+        public async Task<ActionResult<Playtime>> CreatePlaytimeForPet(int id, Playtime playtime)
+        //                                       |       |
+        //                                       |       Player deserialized from JSON from the body
+        //                                       |
+        //                                       Game Night ID comes from the URL
+        {
+            // First, let's find the game night (by using the ID)
+            var pet = await _context.Pets.FindAsync(id);
+
+            // If the game night doesn't exist: return a 404 Not found.
+            if (pet == null)
+            {
+                // Return a `404` response to the client indicating we could not find a game night with this id
+                return NotFound();
+            }
+
+            // Associate the player to the given game night.
+            playtime.PetId = pet.Id;
+            playtime.When = DateTime.Now;
+            pet.HappinessLevel += 5;
+            pet.HungerLevel += 3;
+
+            // Add the player to the database
+            _context.Playtimes.Add(playtime);
+            await _context.SaveChangesAsync();
+
+            // Return the new player to the response of the API
+            return Ok(playtime);
+        }
+
+        [HttpPost("{id}/Feedings")]
+        public async Task<ActionResult<Feeding>> CreateFeeding(int id, Feeding feeding)
+        //                                       |       |
+        //                                       |       Player deserialized from JSON from the body
+        //                                       |
+        //                                       Game Night ID comes from the URL
+        {
+            // First, let's find the game night (by using the ID)
+            var pet = await _context.Pets.FindAsync(id);
+
+            // If the game night doesn't exist: return a 404 Not found.
+            if (pet == null)
+            {
+                // Return a `404` response to the client indicating we could not find a game night with this id
+                return NotFound();
+            }
+
+            // Associate the player to the given game night.
+            feeding.PetId = pet.Id;
+            feeding.When = DateTime.Now;
+            pet.HappinessLevel += 3;
+            if (pet.HungerLevel > 5)
+            {
+                pet.HungerLevel -= 5;
+            }
+            else
+            {
+                pet.HungerLevel = 0;
+            }
+
+            // Add the player to the database
+            _context.Feedings.Add(feeding);
+            await _context.SaveChangesAsync();
+
+            // Return the new player to the response of the API
+            return Ok(feeding);
+        }
+
     }
 }
