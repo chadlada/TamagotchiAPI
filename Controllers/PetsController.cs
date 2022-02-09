@@ -26,6 +26,10 @@ namespace TamagotchiAPI.Controllers
             _context = context;
         }
 
+
+        // *****************************************************************************************************************************
+
+
         // GET: api/Pets
         //
         // Returns a list of all your Pets
@@ -72,6 +76,9 @@ namespace TamagotchiAPI.Controllers
         // supplies to the names of the attributes of our Pet POCO class. This represents the
         // new values for the record.
         //
+
+        // *****************************************************************************************************************************
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPet(int id, Pet pet)
         {
@@ -112,6 +119,9 @@ namespace TamagotchiAPI.Controllers
             return Ok(pet);
         }
 
+        // *****************************************************************************************************************************
+
+
         // POST: api/Pets
         //
         // Creates a new pet in the database.
@@ -132,6 +142,8 @@ namespace TamagotchiAPI.Controllers
             // headers with details of the newly created object.
             return CreatedAtAction("GetPet", new { id = pet.Id }, pet);
         }
+        // *****************************************************************************************************************************
+
 
         // DELETE: api/Pets/5
         //
@@ -165,6 +177,9 @@ namespace TamagotchiAPI.Controllers
         {
             return _context.Pets.Any(pet => pet.Id == id);
         }
+        // *****************************************************************************************************************************
+
+
 
         [HttpPost("{id}/Playtimes")]
         public async Task<ActionResult<Playtime>> CreatePlaytimeForPet(int id, Playtime playtime)
@@ -182,20 +197,30 @@ namespace TamagotchiAPI.Controllers
                 // Return a `404` response to the client indicating we could not find a game night with this id
                 return NotFound();
             }
+            else if (pet.HasPulse() == true)
+            {
+                // Associate the playtime to the given pet.
+                playtime.PetId = pet.Id;
+                playtime.When = DateTime.Now;
+                pet.HappinessLevel += 5;
+                pet.HungerLevel += 3;
+                pet.LastInteractedWith = DateTime.Now;
 
-            // Associate the player to the given game night.
-            playtime.PetId = pet.Id;
-            playtime.When = DateTime.Now;
-            pet.HappinessLevel += 5;
-            pet.HungerLevel += 3;
+                // Add the playtime to the database
+                _context.Playtimes.Add(playtime);
+                await _context.SaveChangesAsync();
 
-            // Add the player to the database
-            _context.Playtimes.Add(playtime);
-            await _context.SaveChangesAsync();
-
-            // Return the new player to the response of the API
-            return Ok(playtime);
+                // Return the new player to the response of the API
+                return Ok(playtime);
+            }
+            else
+            {
+                return Ok("Pet DEAD! Oops!");
+            }
         }
+
+        // *****************************************************************************************************************************
+
 
         [HttpPost("{id}/Feedings")]
         public async Task<ActionResult<Feeding>> CreateFeeding(int id, Feeding feeding)
@@ -234,6 +259,10 @@ namespace TamagotchiAPI.Controllers
             // Return the new player to the response of the API
             return Ok(feeding);
         }
+
+
+        // *****************************************************************************************************************************
+
 
         [HttpPost("{id}/Scoldings")]
         public async Task<ActionResult<Playtime>> CreateScolding(int id, Scolding scolding)

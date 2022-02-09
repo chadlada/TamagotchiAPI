@@ -8,5 +8,6 @@ namespace TamagotchiAPI.Models
         public DateTime When { get; set; } = DateTime.Now;
         public int PetId { get; set; }
         public Pet Pet { get; set; }
+
     }
 }
