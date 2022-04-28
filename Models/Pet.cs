@@ -11,7 +11,7 @@ namespace TamagotchiAPI.Models
         public int HappinessLevel { get; set; }
 
         // Adventure mode
-        public DateTime LastInteractedWith { get; set; }
+        public DateTime LastInteractedWith { get; set; } = DateTime.Now;
         public bool IsDead { get; set; } = false;
 
         public bool HasPulse()

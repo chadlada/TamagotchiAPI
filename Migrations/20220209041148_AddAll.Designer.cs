@@ -10,7 +10,7 @@ using TamagotchiAPI.Models;
 namespace TamagotchiAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20220209011845_AddAll")]
+    [Migration("20220209041148_AddAll")]
     partial class AddAll
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,6 +56,9 @@ namespace TamagotchiAPI.Migrations
 
                     b.Property<int>("HungerLevel")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("IsDead")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime>("LastInteractedWith")
                         .HasColumnType("timestamp without time zone");
