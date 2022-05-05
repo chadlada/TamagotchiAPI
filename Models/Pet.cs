@@ -27,18 +27,5 @@ namespace TamagotchiAPI.Models
             return IsDead;
         }
 
-        // {
-        //     get
-        //     {
-        //         if (LastInteractedWith.AddDays(3) <= DateTime.Now || HungerLevel >= 15)
-        //         {
-        //             return true;
-        //         }
-        //         else
-        //         {
-        //             return false;
-        //         }
-        //     }
-        // }
     }
 }

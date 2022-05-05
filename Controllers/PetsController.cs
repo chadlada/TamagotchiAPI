@@ -197,7 +197,7 @@ namespace TamagotchiAPI.Controllers
                 // Return a `404` response to the client indicating we could not find a game night with this id
                 return NotFound();
             }
-            else if (pet.HasPulse() == true)
+            else if (pet.HasPulse() == false)
             {
                 // Associate the playtime to the given pet.
                 playtime.PetId = pet.Id;
